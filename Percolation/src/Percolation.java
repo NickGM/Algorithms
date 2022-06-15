@@ -69,7 +69,7 @@ public class Percolation {
         if (row < 1 && row > size) throw new IllegalArgumentException("row is out of bounds.");
         if (col < 1 && col > size) throw new IllegalArgumentException("column is out of bounds.");
 
-        return qf.connected(qfIndex(row, col), topIndex);
+        return qf.find(qfIndex(row, col)) == qf.find(topIndex);
     }
 
     // returns the number of open sites
@@ -81,7 +81,6 @@ public class Percolation {
         int top = qf.find(topIndex);
         int bot = qf.find(btmIndex);
         return top == bot;
-        //return qf.connected(topIndex, btmIndex);
     }
 
     private int qfIndex(int row, int col) {
