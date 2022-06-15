@@ -30,17 +30,17 @@ public class Percolation {
         if (row < 1 && row > size) throw new IllegalArgumentException("row is out of bounds.");
         if (col < 1 && col > size) throw new IllegalArgumentException("column is out of bounds.");
 
-       //if (isOpen(row, col)) return;
-
+        if (isOpen(row, col)) return;
         opened[row - 1][col - 1] = true;
-        openSites++;
+
         int currentIndex = qfIndex(row, col);
 
-        //Edge Cases
-        if (row == 1)
-            qf.union(currentIndex, topIndex);//this will need to be fixed
-        if (row == size)
-            qf.union(currentIndex, btmIndex);
+        if (row == 1) {
+            qf.union(topIndex, currentIndex);
+        }
+        if (row == size) {
+            qf.union(btmIndex, currentIndex);
+        }
 
         //Everything but edge cases
         if (row > 1 && isOpen(row - 1, col))
@@ -51,6 +51,8 @@ public class Percolation {
             qf.union(currentIndex, qfIndex(row, col - 1));
         if (col < size && isOpen(row, col + 1))
             qf.union(currentIndex, qfIndex(row, col + 1));
+
+        openSites++;
     }
 
     // is the site (row, col) open?
@@ -89,14 +91,13 @@ public class Percolation {
     // test client (optional)
     public static void main(String[] args)
     {
-        int n = 10;
+        int n = 20;
         Percolation p = new Percolation(n);
         while (!p.percolates())
         {
-            int randomRow = StdRandom.uniform(n) + 1;
-            int randomCol = StdRandom.uniform(n) + 1;
-            if (!p.isOpen(randomRow, randomRow))
-                p.open(randomRow, randomCol);
+            int randomRow = StdRandom.uniform(1, n + 1);
+            int randomCol = StdRandom.uniform(1, n + 1);
+            p.open(randomRow, randomCol);
         }
 
         StdOut.println("\nA total of " + p.numberOfOpenSites() + " sites were opened.");
