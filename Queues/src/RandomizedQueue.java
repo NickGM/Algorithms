@@ -68,7 +68,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         RandomQueueIterator()
         {
             shuffledItems = (Item[]) new Object[Size];
-            System.arraycopy(A, 0, shuffledItems, 0, Size);
+            for (int i = 0; i < Size; i++) shuffledItems[i] = A[i];
             StdRandom.shuffle(shuffledItems);
         }
         public Item next() {
