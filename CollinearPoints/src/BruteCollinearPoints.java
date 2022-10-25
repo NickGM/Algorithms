@@ -11,6 +11,7 @@ public class BruteCollinearPoints {
     private Stack<LineSegment> lineSegStack;
 
     public BruteCollinearPoints(Point[] points) {
+        lineSegStack = new Stack<LineSegment>();
         if (points == null) throw new IllegalArgumentException();
         Arrays.sort(points);
         checkDuplicatePoints(points);
@@ -54,8 +55,9 @@ public class BruteCollinearPoints {
     // the line segments
     public LineSegment[] segments() {
         LineSegment[] segs = new LineSegment[lineSegStack.size()];
-        for (int i = 0; i < lineSegStack.size(); i++)
-            segs[i] = lineSegStack.pop();
+        int i = 0;
+        while (!lineSegStack.isEmpty())
+            segs[i++] = lineSegStack.pop();
         return segs;
     }
 
