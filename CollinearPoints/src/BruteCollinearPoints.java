@@ -12,9 +12,13 @@ public class BruteCollinearPoints {
 
     public BruteCollinearPoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
+        Arrays.sort(points);
+        checkDuplicatePoints(points);
         pts = new Point[points.length];
-        for (int i = 0; i < points.length; i++) pts[i] = points[i];
-
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) throw new IllegalArgumentException();
+            else pts[i] = points[i];
+        }
         calcCollinearSegments();
     }
 
@@ -53,5 +57,12 @@ public class BruteCollinearPoints {
         for (int i = 0; i < lineSegStack.size(); i++)
             segs[i] = lineSegStack.pop();
         return segs;
+    }
+
+    private void checkDuplicatePoints(Point[] points) {
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i].compareTo(points[i + 1]) == 0)
+                throw new IllegalArgumentException("Duplicated entries in given points");
+        }
     }
 }
