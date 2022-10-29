@@ -1,25 +1,26 @@
-import edu.princeton.cs.algs4.Stack;
-
-import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BruteCollinearPoints {
     // finds all line segments containing 4 points
-    private Point[] pts;
+    final private Point[] pts;
     private int segCount;
-    //Should really use a resizing array but too lazy
-    private Stack<LineSegment> lineSegStack;
+    final private ArrayList<LineSegment> Segments = new ArrayList<>();
 
     public BruteCollinearPoints(Point[] points) {
-        lineSegStack = new Stack<LineSegment>();
         if (points == null) throw new IllegalArgumentException();
-        Arrays.sort(points);
-        checkDuplicatePoints(points);
+
         pts = new Point[points.length];
+
         for (int i = 0; i < points.length; i++) {
             if (points[i] == null) throw new IllegalArgumentException();
             else pts[i] = points[i];
         }
+
+        Arrays.sort(pts);
+        checkDuplicatePoints(pts);
+
+
         calcCollinearSegments();
     }
 
@@ -38,7 +39,7 @@ public class BruteCollinearPoints {
                         double slopeB = subset[0].slopeTo(subset[2]);
                         double slopeC = subset[0].slopeTo(subset[3]);
                         if (slopeA == slopeB && slopeB == slopeC) {
-                            lineSegStack.push(new LineSegment(subset[0], subset[3]));
+                            Segments.add(new LineSegment(subset[0], subset[3]));
                             segCount++;
                         }
                     }
@@ -54,10 +55,10 @@ public class BruteCollinearPoints {
 
     // the line segments
     public LineSegment[] segments() {
-        LineSegment[] segs = new LineSegment[lineSegStack.size()];
-        int i = 0;
-        while (!lineSegStack.isEmpty())
-            segs[i++] = lineSegStack.pop();
+        LineSegment[] segs = new LineSegment[Segments.size()];
+
+        for (int i = 0; i < segCount; i++)
+            segs[i] = Segments.get(i);
         return segs;
     }
 
