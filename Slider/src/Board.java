@@ -50,13 +50,15 @@ public class Board {
     }
 
     private int hammingDistance(int val, int r, int c) {
+        if (val == 0) return val;
         int reqVal = GoalVal(r, c);
         return (val == reqVal) ?  0 : 1;
     }
     private int manhattanDistance(int val, int r, int c) {
-        int reqRow = val/n;
-        int reqCol = (val % n) - 1;
-        int dist = Math.abs(r-reqRow) + Math.abs(c-reqCol);
+        if (val == 0) return val;
+        int goalRow = (val - 1)/n;
+        int goalCol = (val - 1)%n;
+        int dist = Math.abs(r-goalRow) + Math.abs(c-goalCol);
         return dist;
     }
 
@@ -71,6 +73,6 @@ public class Board {
         System.out.println(myBoard.toString());
 
         System.out.println("Hamming value = " + myBoard.hamming() + "\n");
-        System.out.println("Manhattan value = " + myBoard.hamming() + "\n");
+        System.out.println("Manhattan value = " + myBoard.manhattan() + "\n");
     }
 }
