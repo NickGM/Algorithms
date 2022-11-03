@@ -15,11 +15,31 @@ public class Board {
 
     public String toString() {
         String matrix = new String();
+        matrix += (n + "\n");
         for (int i = 0; i < n; i++, matrix += ("\n")) {
             for (int j = 0; j < n; j++)
                 matrix += (myBoard[i][j] + "\t");
         }
       return matrix;
+    }
+
+    public int dimension() { return n;}
+
+    public int hamming() {
+        int hammingval = 0;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                hammingval += hammingDistance(myBoard[i][j], i, j);
+
+        return hammingval;
+    }
+
+    public int manhattan() {
+        int manhattan = 0;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                manhattan += manhattanDistance(myBoard[i][j], i, j);
+        return manhattan;
     }
 
     private int[][] BoardCopy(int matrix[][]) {
@@ -29,9 +49,28 @@ public class Board {
         return boardCopy;
     }
 
+    private int hammingDistance(int val, int r, int c) {
+        int reqVal = GoalVal(r, c);
+        return (val == reqVal) ?  0 : 1;
+    }
+    private int manhattanDistance(int val, int r, int c) {
+        int reqRow = val/n;
+        int reqCol = (val % n) - 1;
+        int dist = Math.abs(r-reqRow) + Math.abs(c-reqCol);
+        return dist;
+    }
+
+    private int GoalVal(int r, int c) {
+        if ((r+1) == n && (c+1) == n) return 0;
+        else return (r*n)+c+1;
+    }
+
     public static void main(String[] args) {
-        int[][] array = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        int[][] array = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
         Board myBoard = new Board(array);
         System.out.println(myBoard.toString());
+
+        System.out.println("Hamming value = " + myBoard.hamming() + "\n");
+        System.out.println("Manhattan value = " + myBoard.hamming() + "\n");
     }
 }
