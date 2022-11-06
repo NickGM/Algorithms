@@ -1,9 +1,12 @@
+import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
 
     private final int[][] myBoard;
     private final int n;
+
+    private int blankpos = 999;
     public Board(int[][] tiles) {
         if (tiles == null) {
             throw new NullPointerException();
@@ -17,8 +20,11 @@ public class Board {
         String matrix = new String();
         matrix += (n + "\n");
         for (int i = 0; i < n; i++, matrix += ("\n")) {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < n; j++) {
                 matrix += (myBoard[i][j] + "\t");
+                if (myBoard[i][j] == 0)
+                    blankpos = RCtoOneD(i, j);
+            }
         }
       return matrix;
     }
@@ -42,6 +48,49 @@ public class Board {
         return manhattan;
     }
 
+    public boolean isGoal() {
+        return (hamming() == 0);
+    }
+
+    public boolean equals(Object y) {
+        if (y == this) return true;
+        if (!(y instanceof Board)) return false;
+
+        Board b = (Board)y;
+
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                if (myBoard[i][j] != b.myBoard[i][j]) return false;
+            }
+        return true;
+    }
+
+    public Iterable<Board> neighbors() {
+        Queue<Board> boardQueue = new Queue<Board>();
+
+        int blankrow = OneDtoRow(blankpos);
+        int blankCol = OneDtoCol(blankpos);
+
+        //Swap up if we're not in the first row:
+        if (blankrow != 0) {
+            int newBoard[][] = new int[n][n];
+            for (int i = 0; i < n; i++)
+                newBoard[i] = myBoard[i].clone();
+            int temp = newBoard[blankrow-1][blankCol];
+            newBoard[blankrow-1][blankCol] = 0;
+            newBoard[blankrow][blankCol] = temp;
+        }
+
+        //Swap down if we're not in the last row
+        if (blankrow != (n-1)) {
+
+        }
+
+        //If we're not in the first col
+
+        return boardQueue;
+    }
+
     private int[][] BoardCopy(int matrix[][]) {
         int boardCopy[][] = new int[matrix.length][];
         for (int i = 0; i < matrix.length; i++)
@@ -56,15 +105,27 @@ public class Board {
     }
     private int manhattanDistance(int val, int r, int c) {
         if (val == 0) return val;
-        int goalRow = (val - 1)/n;
-        int goalCol = (val - 1)%n;
+        int goalRow = OneDtoRow(val - 1);
+        int goalCol = OneDtoCol(val - 1);
         int dist = Math.abs(r-goalRow) + Math.abs(c-goalCol);
         return dist;
     }
 
     private int GoalVal(int r, int c) {
         if ((r+1) == n && (c+1) == n) return 0;
-        else return (r*n)+c+1;
+        else return RCtoOneD(r, c)+1;
+    }
+
+    private int RCtoOneD (int r, int c) {
+        return (r*n)+c;
+    }
+
+    private int OneDtoRow(int oneD) {
+        return oneD/n;
+    }
+
+    private int OneDtoCol(int oneD) {
+        return oneD%n;
     }
 
     public static void main(String[] args) {
