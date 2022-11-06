@@ -1,6 +1,8 @@
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.LinkedList;
+
 public class Board {
 
     private final int[][] myBoard;
@@ -66,27 +68,38 @@ public class Board {
     }
 
     public Iterable<Board> neighbors() {
-        Queue<Board> boardQueue = new Queue<Board>();
+        LinkedList<Board> boardList = new LinkedList<>();
 
         int blankrow = OneDtoRow(blankpos);
         int blankCol = OneDtoCol(blankpos);
 
         //Swap up if we're not in the first row:
         if (blankrow != 0) {
-            int newBoard[][] = new int[n][n];
+            int newArr[][] = new int[n][n];
             for (int i = 0; i < n; i++)
-                newBoard[i] = myBoard[i].clone();
-            int temp = newBoard[blankrow-1][blankCol];
-            newBoard[blankrow-1][blankCol] = 0;
-            newBoard[blankrow][blankCol] = temp;
+                newArr[i] = myBoard[i].clone();
+            int temp = newArr[blankrow-1][blankCol];
+            newArr[blankrow-1][blankCol] = 0;
+            newArr[blankrow][blankCol] = temp;
+            Board newBoard = new Board(newArr);
+            boardList.add(newBoard);
         }
 
         //Swap down if we're not in the last row
         if (blankrow != (n-1)) {
-
+            int newArr[][] = new int[n][n];
+            for (int i = 0; i < n; i++)
+                newArr[i] = myBoard[i].clone();
+            int temp = newArr[blankrow+1][blankCol];
+            newArr[blankrow+1][blankCol] = 0;
+            newArr[blankrow][blankCol] = temp;
+            Board newBoard = new Board(newArr);
+            boardList.add(newBoard);
         }
 
         //If we're not in the first col
+
+        //If we're not in the list col
 
         return boardQueue;
     }
