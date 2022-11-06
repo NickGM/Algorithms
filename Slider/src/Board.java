@@ -97,11 +97,31 @@ public class Board {
             boardList.add(newBoard);
         }
 
-        //If we're not in the first col
+        //Swap left if we're not in the first col
+        if (blankCol != 0) {
+            int newArr[][] = new int[n][n];
+            for (int i = 0; i < n; i++)
+                newArr[i] = myBoard[i].clone();
+            int temp = newArr[blankrow][blankCol-1];
+            newArr[blankrow][blankCol-1] = 0;
+            newArr[blankrow][blankCol] = temp;
+            Board newBoard = new Board(newArr);
+            boardList.add(newBoard);
+        }
 
-        //If we're not in the list col
+        //Swap right if we're not in the list col
+        if (blankCol != (n-1)) {
+            int newArr[][] = new int[n][n];
+            for (int i = 0; i < n; i++)
+                newArr[i] = myBoard[i].clone();
+            int temp = newArr[blankrow][blankCol+1];
+            newArr[blankrow][blankCol+1] = 0;
+            newArr[blankrow][blankCol] = temp;
+            Board newBoard = new Board(newArr);
+            boardList.add(newBoard);
+        }
 
-        return boardQueue;
+        return boardList;
     }
 
     private int[][] BoardCopy(int matrix[][]) {
@@ -148,5 +168,9 @@ public class Board {
 
         System.out.println("Hamming value = " + myBoard.hamming() + "\n");
         System.out.println("Manhattan value = " + myBoard.manhattan() + "\n");
+
+        LinkedList<Board> neighbors = (LinkedList<Board>) myBoard.neighbors();
+        for (Board neighbor : neighbors)
+            System.out.println("\n"+neighbor.toString());
     }
 }
