@@ -1,5 +1,4 @@
-import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.LinkedList;
 
@@ -124,6 +123,18 @@ public class Board {
         return boardList;
     }
 
+    public Board twin() {
+        int rand1 = randomBoardNumber();
+        int rand2;
+        do {
+            rand2 = randomBoardNumber();
+        } while (rand1 == rand2);
+
+        int board[][] = BoardCopy(this.myBoard);
+        swap(board, rand1, rand2);
+        return new Board(board);
+    }
+
     private int[][] BoardCopy(int matrix[][]) {
         int boardCopy[][] = new int[matrix.length][];
         for (int i = 0; i < matrix.length; i++)
@@ -161,16 +172,36 @@ public class Board {
         return oneD%n;
     }
 
+    private int randomBoardNumber() {
+        int random;
+        do {
+            random = StdRandom.uniform(0, n*n);
+        } while (myBoard[OneDtoRow(random)][OneDtoCol(random)] == 0);
+        return random;
+    }
+
+    private void swap(int board[][], int swapFrom, int swapTo) {
+        int temp = board[OneDtoRow(swapTo)][OneDtoCol(swapTo)];
+        board[OneDtoRow(swapTo)][OneDtoCol(swapTo)] = board[OneDtoRow(swapFrom)][OneDtoCol(swapFrom)];
+        board[OneDtoRow(swapFrom)][OneDtoCol(swapFrom)] = temp;
+    }
+
     public static void main(String[] args) {
         int[][] array = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
         Board myBoard = new Board(array);
         System.out.println(myBoard.toString());
 
+        System.out.println("\nTesting Hamming and Manhattan:");
         System.out.println("Hamming value = " + myBoard.hamming() + "\n");
         System.out.println("Manhattan value = " + myBoard.manhattan() + "\n");
 
         LinkedList<Board> neighbors = (LinkedList<Board>) myBoard.neighbors();
+        System.out.println("\nTesting Neighbors:");
         for (Board neighbor : neighbors)
             System.out.println("\n"+neighbor.toString());
+
+        System.out.println("\nTesting Twin:");
+        Board anotherBoard = myBoard.twin();
+        System.out.println(anotherBoard.toString());
     }
 }
