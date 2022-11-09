@@ -1,12 +1,10 @@
-import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.*;
 
-import java.util.LinkedList;
 
 public class Solver {
 
-    private MinPQ<SearchNode> minPQ;
-    private MinPQ<SearchNode> twinPQ;
+    private final MinPQ<SearchNode> minPQ;
+    private final MinPQ<SearchNode> twinPQ;
     private SearchNode solution;
 
     public Solver(Board initial) {
@@ -22,40 +20,74 @@ public class Solver {
         SearchNode twin = new SearchNode(initial.twin(), null);
         twinPQ = new MinPQ<>();
         twinPQ.insert(twin);
+
+        solve();
     }
 
     private void solve() {
-        boolean solutionFound = false;
-        while (!solutionFound) {
-            //do each one, if we get to a solution for minPQ then set solution node.
-            //if not, leave solution node as null
+        while (true) {
+            if (processLevel(minPQ) != null)
+                break;
+            if (processLevel(twinPQ) != null) {
+                solution = null;
+                break;
+            }
         }
     }
 
+    private SearchNode processLevel(MinPQ<SearchNode> pq) {
+        SearchNode minNode = pq.delMin();
+        if (minNode.isGoal()) {
+            solution = minNode;
+            return minNode;
+        }
+
+        minNode.neighborsFiltered();
+        Iterable<Board> neighbors = minNode.neighborsFiltered();
+        for (Board neighbor : neighbors) {
+            SearchNode node = new SearchNode(neighbor, minNode);
+            pq.insert(node);
+        }
+        return null;
+    }
+
     public boolean isSolvable() {
-        return solution != null;
+        return (solution != null);
     }
 
     public int moves() {
-
+        if (!isSolvable()) {
+            return -1;
+        }
+        return solution.moves;
     }
 
     public Iterable<Board> solution() {
-        if (!isSolvable()) return null;
+        if (solution == null) return null;
 
-
+        Stack<Board> solutionsTrace = new Stack<>();
+        SearchNode node = solution;
+        while (node != null) {
+            Board board = node.board;
+            solutionsTrace.push(board);
+            node = node.prev;
+        }
+        return solutionsTrace;
     }
 
     private class SearchNode implements Comparable<SearchNode> {
 
-        private int manhattan;
-        private int moves;
-        private SearchNode prev;
+        private final int manhattan;
+        private final int moves;
+        private final SearchNode prev;
+        private final Board board;
 
         public SearchNode(Board b, SearchNode previous) {
             if (b == null) throw new IllegalArgumentException("Null constructor argument");
             manhattan = b.manhattan();
             moves = (previous == null) ? 0 : previous.moves+1;
+            board = b;
+            prev = previous;
         }
 
         @Override
@@ -66,9 +98,47 @@ public class Solver {
         private int priority() {
             return manhattan + moves;
         }
+
+        private Iterable<Board> neighborsFiltered() {
+            Iterable<Board> neighbors = board.neighbors();
+            Queue<Board> neighborsFiltered = new Queue<>();
+            if (prev != null) {
+                for (Board neighbor : neighbors) {
+                    if (neighbor.equals(prev.board)) {
+                        continue;
+                    }
+                    neighborsFiltered.enqueue(neighbor);
+                }
+                return neighborsFiltered;
+            }
+            return neighbors;
+        }
+
+        public boolean isGoal() {
+            return this.board.isGoal();
+        }
     }
 
     public static void main(String[] args) {
+// create initial board from file
+        In in = new In(args[0]);
+        int n = in.readInt();
+        int[][] tiles = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                tiles[i][j] = in.readInt();
+        Board initial = new Board(tiles);
 
+        // solve the puzzle
+        Solver solver = new Solver(initial);
+
+        // print solution to standard output
+        if (!solver.isSolvable())
+            StdOut.println("No solution possible");
+        else {
+            StdOut.println("Minimum number of moves = " + solver.moves());
+            for (Board board : solver.solution())
+                StdOut.println(board);
+        }
     }
 }
