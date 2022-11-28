@@ -75,6 +75,8 @@ public class BST<Key extends Comparable<Key>, Value> {
         private Node left, right;  // left and right subtrees
         private int size;          // number of nodes in subtree
 
+        private int height;        // deepest node has height zero
+
         public Node(Key key, Value val, int size) {
             this.key = key;
             this.val = val;
@@ -171,6 +173,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         else if (cmp > 0) x.right = put(x.right, key, val);
         else              x.val   = val;
         x.size = 1 + size(x.left) + size(x.right);
+        x.height = 1 + Math.max(x.left.height, x.right.height);
         return x;
     }
 
@@ -190,6 +193,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         if (x.left == null) return x.right;
         x.left = deleteMin(x.left);
         x.size = size(x.left) + size(x.right) + 1;
+        x.height = 1 + Math.max(x.left.height, x.right.height);
         return x;
     }
 
@@ -208,6 +212,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         if (x.right == null) return x.left;
         x.right = deleteMax(x.right);
         x.size = size(x.left) + size(x.right) + 1;
+        x.height = 1 + Math.max(x.left.height, x.right.height);
         return x;
     }
 
@@ -239,6 +244,7 @@ public class BST<Key extends Comparable<Key>, Value> {
             x.left = t.left;
         }
         x.size = size(x.left) + size(x.right) + 1;
+        x.height = 1 + Math.max(x.left.height, x.right.height);
         return x;
     }
 
