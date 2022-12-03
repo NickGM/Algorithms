@@ -24,6 +24,7 @@
  ******************************************************************************/
 
 import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -81,6 +82,11 @@ public class BST<Key extends Comparable<Key>, Value> {
             this.key = key;
             this.val = val;
             this.size = size;
+        }
+
+        private Node(Key key, Value val) {
+            this.key = key;
+            this.val = val;
         }
     }
 
@@ -146,6 +152,18 @@ public class BST<Key extends Comparable<Key>, Value> {
         else              return x.val;
     }
 
+    public Value getNonRecursive(Key key) {
+        Node x = root;
+        while (x != null) {
+            int cmp = key.compareTo(x.key);
+            if (cmp == 0) return x.val;
+            if (cmp < 0)    x = x.left;
+            else            x = x.right;
+        }
+        return null;
+    }
+
+
     /**
      * Inserts the specified key-value pair into the symbol table, overwriting the old
      * value with the new value if the symbol table already contains the specified key.
@@ -175,6 +193,29 @@ public class BST<Key extends Comparable<Key>, Value> {
         x.size = 1 + size(x.left) + size(x.right);
         x.height = 1 + Math.max(x.left.height, x.right.height);
         return x;
+    }
+
+    public void putNonRecursive(Key key, Value val) {
+        Node z = new Node(key, val);
+        if (root == null) {
+            root = z;
+            return;
+        }
+
+        Node parent = null, x = root;
+        while (x != null) {
+            parent = x;
+            int cmp = key.compareTo(x.key);
+            if      (cmp < 0) x = x.left;
+            else if (cmp > 0) x = x.right;
+            else {
+                x.val = val;
+                return;
+            }
+        }
+        int cmp = key.compareTo(parent.key);
+        if (cmp < 0) parent.left  = z;
+        else         parent.right = z;
     }
 
 
@@ -410,6 +451,24 @@ public class BST<Key extends Comparable<Key>, Value> {
     public Iterable<Key> keys() {
         if (isEmpty()) return new Queue<Key>();
         return keys(min(), max());
+    }
+
+    public Iterable<Key> keysNonrecursive() {
+        Stack<Node> stack = new Stack<Node>();
+        Queue<Key> queue = new Queue<Key>();
+        Node x = root;
+        while (x != null || !stack.isEmpty()) {
+            if (x != null) {
+                stack.push(x);
+                x = x.left;
+            }
+            else {
+                x = stack.pop();
+                queue.enqueue(x.key);
+                x = x.right;
+            }
+        }
+        return queue;
     }
 
     /**
