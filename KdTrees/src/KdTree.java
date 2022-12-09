@@ -10,12 +10,13 @@ public class KdTree {
     private Node root;
     private int size;
     private class Node {
-        private final Point2D p;
+        private Point2D p;
         private Node lb, rt;
 
         int level;
 
         Node(Point2D p, int level) {
+            nullTest(p);
             this.p = p;
             this.level = level;
         }
@@ -40,6 +41,7 @@ public class KdTree {
 
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
+        nullTest(p);
         root = insert(root, p, 0);
     }
 
