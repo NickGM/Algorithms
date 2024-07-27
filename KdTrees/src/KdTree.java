@@ -200,6 +200,6 @@ public class KdTree {
         t.insert(new Point2D(0.4, 0.7));
         t.insert(new Point2D(0.9, 0.6));
 
-        Queue<Point2D> q = (Queue<Point2D>) t.range(new RectHV(0.13, 0.05, 0.65, 0.45));
+        t.insert(null);
     }
 }
